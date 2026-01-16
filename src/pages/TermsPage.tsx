@@ -271,7 +271,7 @@ function TermsPage() {
                                             </p>
                                         </div>
 
-                                        <ul className="space-y-4">
+                                        <ul className="space-y-4 mb-8">
                                             {[
                                                 '서비스에서 제공하는 운세, 사주 풀이 등의 결과는 재미 요소로만 활용해 주세요.',
                                                 '음식 추천 결과를 이용한 식이, 건강 관련 결정은 전문가와 상담하시기 바랍니다.',
@@ -286,6 +286,21 @@ function TermsPage() {
                                                 </li>
                                             ))}
                                         </ul>
+
+                                        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+                                            <h4 className="font-medium text-amber-900 mb-3">음식 데이터 출처 및 정확성</h4>
+                                            <p className="text-sm text-amber-800 leading-relaxed mb-3">
+                                                음식 추천 서비스의 영양 정보는 아래 공공데이터를 기반으로 제공되며, 참고용으로만 활용해 주시기 바랍니다.
+                                            </p>
+                                            <div className="bg-white rounded-xl p-4">
+                                                <p className="text-xs text-stone-600 leading-relaxed">
+                                                    <strong className="text-stone-900">데이터 출처:</strong> 공공데이터포털 - 전국통합식품영양성분정보(음식)표준데이터 (식품의약품안전처)
+                                                </p>
+                                            </div>
+                                            <p className="text-xs text-amber-700 mt-3">
+                                                ※ 제공되는 영양 정보는 일반적인 기준이며, 조리 방법, 재료, 분량 등에 따라 실제 값과 차이가 있을 수 있습니다.
+                                            </p>
+                                        </div>
                                     </section>
 
                                     {/* 섹션 5: 지적재산권 */}

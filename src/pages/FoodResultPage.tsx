@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
@@ -45,18 +45,29 @@ function FoodResultPage() {
   });
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinningFood, setSpinningFood] = useState<FoodItem | null>(null);
+  const hasCheckedAccess = useRef(false);
 
   // 페이지 진입 시 맨 위로 스크롤
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // 직접 접근 시 /food로 리다이렉트
+  // 새로고침 또는 직접 접근 시 루트로 리다이렉트
   useEffect(() => {
-    if (!state) {
-      navigate('/food', { replace: true });
+    // StrictMode 두 번 실행 방지
+    if (hasCheckedAccess.current) return;
+    hasCheckedAccess.current = true;
+
+    const canAccess = sessionStorage.getItem('canAccessFoodResult');
+
+    if (canAccess) {
+      // 정상 접근: 플래그 삭제 (새로고침 시 리다이렉트되도록)
+      sessionStorage.removeItem('canAccessFoodResult');
+    } else {
+      // 새로고침 또는 직접 접근: 루트로 리다이렉트
+      navigate('/', { replace: true });
     }
-  }, [state, navigate]);
+  }, [navigate]);
 
   // 다시 추천받기 (유사 음식 제외, 애니메이션 포함)
   const retryRecommend = useCallback(() => {
@@ -220,7 +231,8 @@ function FoodResultPage() {
 
                         {/* 영양 정보 */}
                         <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-                          <h4 className="text-sm font-semibold text-stone-600 mb-4 text-center">영양 정보 (1인분 기준)</h4>
+                          <h4 className="text-sm font-semibold text-stone-600 mb-2 text-center">영양 정보 (1인분 기준)</h4>
+                          <p className="text-xs text-amber-600 mb-4 text-center">※ 영양 정보는 참고용이며, 실제와 다를 수 있습니다</p>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             <div className="text-center">
                               <div className="text-2xl font-bold text-orange-600">{result.nutrition.calories}</div>
@@ -327,6 +339,13 @@ function FoodResultPage() {
                           * 이전에 추천된 유사 메뉴는 제외됩니다
                         </p>
                       )}
+
+                      {/* 데이터 출처 */}
+                      <div className="mt-8 p-4 bg-stone-50 border border-stone-200 rounded-xl">
+                        <p className="text-xs text-stone-500 text-center leading-relaxed">
+                          음식 데이터 출처: 공공데이터포털 - 전국통합식품영양성분정보(음식)표준데이터 (식품의약품안전처)
+                        </p>
+                      </div>
                     </>
                   ) : (
                     <div className="text-center">

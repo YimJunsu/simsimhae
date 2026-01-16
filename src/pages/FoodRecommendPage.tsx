@@ -68,6 +68,9 @@ function FoodRecommendPage() {
         clearInterval(spinInterval);
         const finalFood = getRandomFood(foods);
 
+        // 결과 페이지 접근 허용 플래그 설정
+        sessionStorage.setItem('canAccessFoodResult', 'true');
+
         // 결과 페이지로 이동
         navigate('/food/result', {
           state: {
@@ -122,7 +125,7 @@ function FoodRecommendPage() {
   );
 
   // 현재 단계에 따른 진행 상태
-  const getStepProgress = (targetStep: string, index: number) => {
+  const getStepProgress = (targetStep: string) => {
     const steps = ['mealTime', 'companion', 'foodType'];
     const currentIndex = steps.indexOf(step);
     const targetIndex = steps.indexOf(targetStep);
@@ -158,7 +161,7 @@ function FoodRecommendPage() {
               <div className="mx-auto max-w-[600px]">
                 <div className="flex items-center justify-center gap-2 mb-8">
                   {['mealTime', 'companion', 'foodType'].map((s, i) => {
-                    const progress = getStepProgress(s, i);
+                    const progress = getStepProgress(s);
                     return (
                       <div key={s} className="flex items-center">
                         <div

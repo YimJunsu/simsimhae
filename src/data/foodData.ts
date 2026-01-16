@@ -9,7 +9,7 @@ import foodDatabase from './foodDatabase.json';
 export type MealTime = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'latenight';
 export type FoodType =
   | 'rice' | 'noodle' | 'soup' | 'stew' | 'grill'
-  | 'stirfry' | 'fried' | 'steamed' | 'braised' | 'pancake' | 'porridge';
+  | 'stirfry' | 'fried' | 'steamed' | 'braised' | 'pancake' | 'porridge' | 'dessert';
 export type Companion = 'alone' | 'friend' | 'lover' | 'family' | 'colleague';
 
 export interface Nutrition {
@@ -53,6 +53,7 @@ export const FOOD_TYPE_LABELS: Record<FoodType, string> = {
   braised: '조림',
   pancake: '전/부침',
   porridge: '죽/스프',
+  dessert: '디저트',
 };
 
 export const FOOD_TYPE_EMOJI: Record<FoodType, string> = {
@@ -67,6 +68,7 @@ export const FOOD_TYPE_EMOJI: Record<FoodType, string> = {
   braised: '🍖',
   pancake: '🥞',
   porridge: '🥣',
+  dessert: '🍰',
 };
 
 export const COMPANION_LABELS: Record<Companion, string> = {
@@ -85,14 +87,32 @@ export const COMPANION_EMOJI: Record<Companion, string> = {
   colleague: '👔',
 };
 
-// 메인 카테고리만 필터링 (식사용 음식)
+// 메인 카테고리만 필터링 (식사용 음식 + 디저트)
 const mainFoodTypes: FoodType[] = [
   'rice', 'noodle', 'soup', 'stew', 'grill',
-  'stirfry', 'fried', 'steamed', 'braised', 'pancake', 'porridge'
+  'stirfry', 'fried', 'steamed', 'braised', 'pancake', 'porridge', 'dessert'
 ];
 
-// 전체 음식 데이터 (메인 카테고리만)
-export const allFoods: FoodItem[] = (foodDatabase.foods as FoodItem[]).filter(
+// 디저트 카테고리로 취급할 원본 카테고리들
+const dessertCategories = ['bread', 'dairy'];
+
+// 디저트는 모든 식사 시간에 먹을 수 있음
+const allMealTimes: MealTime[] = ['breakfast', 'lunch', 'dinner', 'snack', 'latenight'];
+
+// 전체 음식 데이터 (메인 카테고리 + 디저트)
+export const allFoods: FoodItem[] = (foodDatabase.foods as FoodItem[]).map(
+  food => {
+    // 빵/과자류, 유제품/빙과류는 dessert로 변경하고 모든 시간대에 먹을 수 있도록 설정
+    if (dessertCategories.includes(food.foodType)) {
+      return {
+        ...food,
+        foodType: 'dessert' as FoodType,
+        mealTimes: allMealTimes
+      };
+    }
+    return food;
+  }
+).filter(
   food => mainFoodTypes.includes(food.foodType as FoodType)
 );
 
